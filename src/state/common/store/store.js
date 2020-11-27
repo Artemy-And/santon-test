@@ -1,100 +1,54 @@
-import { state } from "./state";
+import {Store} from "../common/store/store";
+import {Registry} from "../common/store/registry";
 
-export class Store {
-  constructor(name, initialConfig = {}) {
-    if (!name) {
-      throw new Error("Could not create store without name!");
-    }
+export const ADD_PRODUCT = "ADD_PRODUCT";
+export const REMOVE_PRODUCT = "REMOVE_PRODUCT";
 
-    const config = {
-      options: this.getOptions(initialConfig.options),
-      reducers: this.getReducers(initialConfig.reducers),
-    };
 
-    this.name = name;
-    this.listeners = [];
-    this.config = config;
-    this.data = initialConfig.data || {};
+const ProductsStore = new Store("products", {
+  data: {
+    products: [],
+    productsNewArray: []
+  },
+  options: {
+    shouldInitFromState: true,
+    stateKey: "products",
+  },
+  reducers: [
+    {
+      type: ADD_PRODUCT,
+      action(state, payload) {
 
-    if (this.config.options.shouldInitFromState) {
-      if (!this.config.options.stateKey) {
-        throw new Error(
-          "shouldInitFromState is true, but stateKey is not stated!"
-        );
-      }
+        const {product} = payload;
 
-      this.initFromGlobalState();
-    }
-  }
+        const productsNewArray = [...state.productsNewArray, product];
 
-  getOptions(options = {}) {
-    const defaultOptions = {
-      shouldEmitAfterSubscription: true,
-      shouldInitFromState: false,
-      stateKey: undefined,
-    };
+        return {
+          ...state,
+          productsNewArray,
+        };
+      },
+    },
+    {
+      type: REMOVE_PRODUCT,
+      action(state, payload) {
+        const {id} = payload;
+        const productsNewArray = [...state.productsNewArray];
+        const index = productsNewArray.findIndex((product) => product.id === id);
 
-    return {
-      ...defaultOptions,
-      ...options,
-    };
-  }
-
-  getReducers(reducers = []) {
-    const defaultReducers = [];
-
-    return [...defaultReducers, ...reducers];
-  }
-
-  initFromGlobalState() {
-    const storeData = state[this.config.options.stateKey] || {};
-
-    this.data = { ...this.data, ...storeData };
-  }
-
-  dispatch(type, payload) {
-    for (const reducer of this.reducers) {
-      if (reducer.type === type) {
-        if (typeof reducer.action === "function") {
-          this.data = reducer.action(this.data, payload);
-        } else {
-          throw new Error("Action function must be specified on reducer!");
+        if (index !== -1) {
+          productsNewArray.splice(index, 1);
         }
-      }
-    }
 
-    this.__emit();
-  }
+        return {
+          ...state,
+          productsNewArray,
+        };
+      },
+    },
+  ],
+});
 
-  subscribe(listener) {
-    if (this.listeners.findIndex((_l) => _l === listener) !== -1) {
-      return;
-    }
+Registry.addStore(ProductsStore);
 
-    this.listeners.push(listener);
-
-    if (this.config.options.shouldEmitAfterSubscription) {
-      listener(this.data);
-    }
-  }
-
-  unsubscribe(listener) {
-    const index = this.listeners.findIndex((_l) => _l === listener);
-
-    if (index === -1) {
-      return;
-    }
-
-    this.listeners.splice(index, 1);
-  }
-
-  __emit() {
-    for (const listener of this.listeners) {
-      if (typeof listener === "function") {
-        listener(this.data);
-      } else {
-        console.warn("listener is not a function!");
-      }
-    }
-  }
-}
+export {ProductsStore};

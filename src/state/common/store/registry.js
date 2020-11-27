@@ -1,9 +1,8 @@
-const { Store } = require("./store");
+const {Store} = require("./store");
 
 class Registry {
   constructor() {
     this.stores = {};
-
     this.dispatch = this.dispatch.bind(this);
   }
 
@@ -28,4 +27,4 @@ class Registry {
 
 const instance = new Registry();
 
-export { instance as Registry };
+export {instance as Registry};

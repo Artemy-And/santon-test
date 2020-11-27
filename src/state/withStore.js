@@ -25,16 +25,17 @@ export function withStore(storeName, fill) {
       }
 
       componentWillUnmount() {
+        debugger
         store.unsubscribe(this.handleStoreUpdate);
       }
 
       render() {
         return (
-          <Component
-            {...this.props}
-            {...fill(this.state.data)}
-            dispatch={Registry.dispatch}
-          />
+            <Component
+                {...this.props}
+                {...fill(this.state.data)}
+                dispatch={Registry.dispatch}
+            />
         );
       }
     };
