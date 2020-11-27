@@ -33,21 +33,21 @@ class Login extends React.Component {
 
 
     return (
-      <div>
+        <div>
 
-        {autorizeFormOpen ?
-        <Modal
-            isOpen={this.state.modalIsOpen}
-            style={customStyles}
-            contentLabel="Example Modal"
-        >
-          <Form isLoggedIn={autorizeFormOpen}/>
+          {autorizeFormOpen ?
+              <Modal
+                  isOpen={this.state.modalIsOpen}
+                  style={customStyles}
+                  contentLabel="Example Modal"
+              >
+                <Form isLoggedIn={autorizeFormOpen}/>
 
 
-        </Modal> : ""
-        }
+              </Modal> : ""
+          }
 
-      </div>
+        </div>
     );
   }
 }

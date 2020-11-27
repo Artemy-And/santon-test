@@ -13,15 +13,15 @@ import {AuthStore, SET_AUTH} from "../../state/stores/AuthStore";
 export const Form = (props) => {
 
     const formik = useFormik({
-            initialValues: {
+        initialValues: {
             email: '',
             password:'',
             rememberMe:false
         },
         onSubmit: () => {
-                if (formik.values.email === '1'&& formik.values.password === '1' ){
-                    return AuthStore.dispatch(SET_AUTH,false)
-                } else { alert('Incorrect email or password')}
+            if (formik.values.email === '1'&& formik.values.password === '1' ){
+                return AuthStore.dispatch(SET_AUTH,false)
+            } else { alert('Incorrect email or password')}
         },
     })
 
